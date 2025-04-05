@@ -1,10 +1,3 @@
-//
-//  Constants.swift
-//  ImageFeed
-//
-//  Created by Gregory Vanyurin on 20.03.2025.
-//
-
 import UIKit
 
 enum Constants {

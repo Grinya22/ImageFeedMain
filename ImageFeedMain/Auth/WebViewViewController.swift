@@ -109,8 +109,16 @@ extension WebViewViewController: WKNavigationDelegate {
     ) {
         if let code = code(from: navigationAction) {
             //TODO: process code
+            print("Получен код: \(code)")
+            delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+            
+            UserDefaults.standard.set(true, forKey: "isAuthorized")
+            UserDefaults.standard.synchronize() // Необязательно, но может ускорить сохранение
+            
             decisionHandler(.cancel)
+            return
         } else {
+            print("Навигация продолжается...")
             decisionHandler(.allow)
         }
     }
@@ -135,6 +143,5 @@ extension WebViewViewController: WKNavigationDelegate {
             return nil
         }
     }
-    
 }
 
