@@ -28,24 +28,23 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        //TODO: process code
+        // Получили код авторизации
         print("Авторизация прошла успешно. Код: \(code)")
-
+        
         // Закрываем WebView
         vc.dismiss(animated: true, completion: nil)
-
-        // Далее обрабатываем полученный код (например, вызываем метод для получения токена)
-        // print("Received auth code: \(code)")
-
-        // Теперь вызываем загрузку изображений
+        
+        // Запускаем процесс получения токена
         fetchOAuthToken(code) { [weak self] result in
             guard let self = self else { return }
-            
             switch result {
-            case .success:
+            case .success(let token):
+                print("Получен токен: \(token)")
+                // Уведомляем делегата, что аутентификация прошла успешно
                 self.delegate?.didAuthenticate(self)
-            case .failure:
-                break
+            case .failure(let error):
+                print("Ошибка при аутентификации: \(error.localizedDescription)")
+                self.showAuthErrorAlert()  // Показываем алерт при ошибке
             }
         }
     }
@@ -58,7 +57,30 @@ extension AuthViewController: WebViewViewControllerDelegate {
 extension AuthViewController {
     private func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         oauth2Service.fetchOAuthToken(code) { result in
-            completion(result)
+            switch result {
+            case .success(let token):
+                completion(.success(token))
+            case .failure(let error):
+                print("Ошибка получения токена: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
         }
     }
 }
+
+
+extension AuthViewController {
+    
+    
+    func showAuthErrorAlert() {
+        let alertController = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
+        let okAction = UIAlertAction(title: "Ок", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
+    }
+}
+

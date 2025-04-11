@@ -32,8 +32,8 @@
                         </constraints>
                     </view>
                     <connections>
-                        <segue destination="YpK-od-BF9" kind="presentation" identifier="ShowAuthView" modalPresentationStyle="overFullScreen" modalTransitionStyle="coverVertical" id="cwo-3n-umf"/>
-                        <segue destination="IQl-Fh-7Ko" kind="presentation" identifier="ShowImagesView" modalPresentationStyle="overFullScreen" modalTransitionStyle="coverVertical" id="jZw-1f-ZE8"/>
+                        <segue destination="YpK-od-BF9" kind="presentation" identifier="ShowAuthenticationScreen" modalPresentationStyle="overFullScreen" modalTransitionStyle="coverVertical" id="cwo-3n-umf"/>
+                        <segue destination="IQl-Fh-7Ko" kind="presentation" identifier="" modalPresentationStyle="overFullScreen" modalTransitionStyle="coverVertical" id="jZw-1f-ZE8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0iy-aR-kD4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -43,7 +43,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="xEq-CZ-qO4">
             <objects>
-                <tabBarController id="IQl-Fh-7Ko" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarViewController" id="IQl-Fh-7Ko" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="vzf-hY-jgn"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="jUr-jg-Afz">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
@@ -180,7 +180,7 @@
         <!--ImageList-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController title="ImageList" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImagesListViewController" title="ImageList" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -367,7 +367,7 @@
         <!--Profile View Controller-->
         <scene sceneID="jST-QF-t9f">
             <objects>
-                <viewController id="c2G-jf-HmC" customClass="ProfileViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ProfileViewController" id="c2G-jf-HmC" customClass="ProfileViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="91g-EI-YFz">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

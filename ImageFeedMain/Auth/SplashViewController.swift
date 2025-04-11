@@ -6,18 +6,19 @@ final class SplashViewController: UIViewController {
     /// Идентификатор перехода на экран авторизации
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
     
-    /// Хранилище токена
-    private let storage = OAuth2TokenStorage()
-
-    // MARK: - Жизненный цикл контроллера
+    private let profileService = ProfileService.shared
     
+    /// Хранилище токена
+    private let storage = OAuth2TokenStorage.shared
+    
+    // MARK: - Жизненный цикл контроллера
     /// Вызывается, когда экран полностью появился
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
         // Если токен есть, переходим к главному экрану (TabBarController)
-        if storage.token != nil {
-            switchToTabBarController()
+        if let token = storage.token {
+            fetchProfile(token)
+            //switchToTabBarController()
         } else {
             // Если токена нет, переходим к экрану авторизации
             performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
@@ -37,22 +38,28 @@ final class SplashViewController: UIViewController {
     }
 
     // MARK: - Переключение на главный экран (TabBarController)
-    
-    /// Метод, который заменяет `rootViewController` на `TabBarController`
-    private func switchToTabBarController() {
+
+    private func switchToTabBarController(selectedIndex: Int = 0) {
         // Получаем главное окно приложения
         guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid window configuration") // Если окна нет, кидаем ошибку в дебаг
+            assertionFailure("Invalid window configuration")
             return
         }
-        
+
         // Создаём экземпляр `TabBarController` из Main.storyboard
-        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarViewController")
-        
-        // Меняем rootViewController на `tabBarController`
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: .main)
+            .instantiateViewController(withIdentifier: "TabBarViewController") as? UITabBarController else {
+            assertionFailure("Could not cast to UITabBarController")
+            return
+        }
+
+        // Выбираем нужную вкладку
+        tabBarController.selectedIndex = selectedIndex
+
+        // Меняем rootViewController на TabBarController
         window.rootViewController = tabBarController
     }
+
 }
 
 // MARK: - Подготовка к переходу на AuthViewController
@@ -81,12 +88,47 @@ extension SplashViewController {
 // MARK: - Обработка успешной авторизации
 
 extension SplashViewController: AuthViewControllerDelegate {
-    /// Этот метод вызывается, когда пользователь успешно авторизовался
+    // Этот метод вызывается, когда пользователь успешно авторизовался
     func didAuthenticate(_ vc: AuthViewController) {
-        // Закрываем экран авторизации
         vc.dismiss(animated: true)
+        //switchToTabBarController(selectedIndex: 1) // <- вот тут выбираешь вкладку
         
-        // Переходим к TabBarController
-        switchToTabBarController()
+        guard let token = OAuth2TokenStorage.shared.token else {
+            print("Токен не найден после авторизации")
+            return
+        }
+        fetchProfile(token) // После успешной авторизации запрашиваем профиль
+    }
+    
+}
+
+// MARK: - Подготовка к переходу на AuthViewController
+
+extension SplashViewController {
+    private func fetchProfile(_ token: String) {
+        UIBlockingProgressHUD.show()
+        
+        profileService.fetchProfile(token) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profile):
+                    ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
+                    
+                    self?.switchToTabBarController(selectedIndex: 1) // Переход к ленте фотографий после успешного получения профиляprivate let profileService = ProfileService.shared
+                case .failure(let error):
+                    print("Ошибка при загрузке профиля: \(error)")
+                    // Если не удалось получить профиль, показываем экран с лентой фотографий
+                    //self?.switchToTabBarController(selectedIndex: 1)
+                    
+                    // Показываем ошибку получения профиля
+                    let alert = UIAlertController(title: "Ошибка", message: "Не удалось загрузить профиль", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self?.present(alert, animated: true)
+
+                }
+            }
+        }
     }
 }

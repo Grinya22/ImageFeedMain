@@ -1,12 +1,34 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
+    private var nameLabel: UILabel!
+    private var loginNameLabel: UILabel!
+    private var descriptionLabel: UILabel!
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
+    private var imageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+                
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
         
-        let profileImage = UIImage(named: "profileImage")
-        let imageView = UIImageView(image: profileImage)
+        let profileImage = UIImage(systemName: "person.circle.fill")?
+            .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
+            .withConfiguration(UIImage.SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
+        imageView = UIImageView(image: profileImage)
+        imageView.contentMode = .scaleAspectFill // Добавляем
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
@@ -20,9 +42,10 @@ final class ProfileViewController: UIViewController {
             imageView.widthAnchor.constraint(equalToConstant: size),
             imageView.heightAnchor.constraint(equalToConstant: size)
         ])
-        
-        let nameLabel = UILabel()
-        nameLabel.text = "Екатерина Новикова"
+    
+        nameLabel = UILabel()
+        //nameLabel.text = "Екатерина Новикова"
+        nameLabel.text = "Имя не указано"
         
         nameLabel.textColor = .ypWhite
         
@@ -34,8 +57,9 @@ final class ProfileViewController: UIViewController {
             nameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor)
         ])
         
-        let loginNameLabel = UILabel()
-        loginNameLabel.text = "@ekaterina_nov"
+        loginNameLabel = UILabel()
+        //loginNameLabel.text = "@ekaterina_nov"
+        loginNameLabel.text = "@неизвестный_пользователь"
         
         loginNameLabel.textColor = .ypGray
         
@@ -47,8 +71,9 @@ final class ProfileViewController: UIViewController {
             loginNameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor)
         ])
         
-        let descriptionLabel = UILabel()
-        descriptionLabel.text = "Hello, world!"
+        descriptionLabel = UILabel()
+        //descriptionLabel.text = "Hello, world!"
+        descriptionLabel.text = "Профиль не заполнен"
         
         descriptionLabel.textColor = .ypWhite
         
@@ -66,14 +91,6 @@ final class ProfileViewController: UIViewController {
             action: #selector(didTapLogoutButton)
         )
         
-//        if let logoutImage = UIImage(named: "logoutButton") ?? UIImage(systemName: "ipad.and.arrow.forward") {
-//            let logoutButton = UIButton.systemButton(
-//                with: logoutImage,
-//                target: self,
-//                action: #selector(didTapLogoutButton)
-//            )
-//        }
-
         logoutButton.tintColor = .ypRed
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(logoutButton)
@@ -83,7 +100,63 @@ final class ProfileViewController: UIViewController {
             logoutButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -36)
         ])
         
+        if let profile = ProfileService.shared.profile {
+            updateProfileDetails(with: profile)
+        }
     }
+    
+    private func updateProfileDetails(with profile: Profile) {
+        nameLabel.text = profile.name.isEmpty ? "Имя не указано" : profile.name
+        loginNameLabel.text = profile.loginName.isEmpty ? "@неизвестный_пользователь" : profile.loginName
+        descriptionLabel.text = (profile.bio?.isEmpty ?? true) ? "Профиль не заполнен" : profile.bio
+        updateAvatar()
+    }
+    
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL),
+            imageView != nil // Добавляем проверку
+        else { return }
+
+        let imageUrl = url
+        print("imageUrl: \(imageUrl)")
+        
+        let placeholderImage = UIImage(systemName: "person.circle.fill")?
+            .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
+            .withConfiguration(UIImage.SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(with: imageUrl,
+                              placeholder: placeholderImage,
+                              options: [
+                                .processor(processor),
+                                .scaleFactor(UIScreen.main.scale) // Учитываем масштаб экрана
+                              ]) { result in
+
+                                  switch result {
+                                // Успешная загрузка
+                                  case .success(let value):
+                                      // Картинка
+                                      print(value.image)
+
+                                      // Откуда картинка загружена:
+                                      // - .none — из сети.
+                                      // - .memory — из кэша оперативной памяти.
+                                      // - .disk — из дискового кэша.
+                                      print(value.cacheType)
+
+                                      // Информация об источнике.
+                                      print(value.source)
+
+                                   // В случае ошибки
+                                  case .failure(let error):
+                                      print(error)
+                                  }
+                              }
+    }
+    
     @objc
     func didTapLogoutButton(_ sender: Any) {
     }
