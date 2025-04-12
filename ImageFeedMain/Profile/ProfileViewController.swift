@@ -12,6 +12,8 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.view.backgroundColor = .ypBlack
                 
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
@@ -28,7 +30,8 @@ final class ProfileViewController: UIViewController {
             .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
             .withConfiguration(UIImage.SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
         imageView = UIImageView(image: profileImage)
-        imageView.contentMode = .scaleAspectFill // Добавляем
+        imageView.contentMode = .scaleAspectFill // Заполняем с сохранением пропорций
+        imageView.clipsToBounds = true
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
@@ -126,13 +129,15 @@ final class ProfileViewController: UIViewController {
             .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
             .withConfiguration(UIImage.SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
         
-        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        let processor = RoundCornerImageProcessor(cornerRadius: 35) // Радиус для круга
         imageView.kf.indicatorType = .activity
         imageView.kf.setImage(with: imageUrl,
                               placeholder: placeholderImage,
                               options: [
                                 .processor(processor),
-                                .scaleFactor(UIScreen.main.scale) // Учитываем масштаб экрана
+                                .scaleFactor(UIScreen.main.scale), // Учитываем масштаб экрана
+                                .cacheOriginalImage, // Кэшируем оригинал
+                                .forceRefresh // Игнорируем кэш, чтобы обновить
                               ]) { result in
 
                                   switch result {

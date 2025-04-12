@@ -11,17 +11,39 @@ final class SplashViewController: UIViewController {
     /// Хранилище токена
     private let storage = OAuth2TokenStorage.shared
     
+    private var imageView: UIImageView!
+    
     // MARK: - Жизненный цикл контроллера
     /// Вызывается, когда экран полностью появился
     override func viewDidAppear(_ animated: Bool) {
+        
+        view.backgroundColor = .ypBlack
+        
+        let imageSplachScreenLogo = UIImage(named: "splashScreenLogo")
+        
+        imageView = UIImageView(image: imageSplachScreenLogo)
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(imageView)
+        
+        NSLayoutConstraint.activate([
+               imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+               imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        
         super.viewDidAppear(animated)
         // Если токен есть, переходим к главному экрану (TabBarController)
         if let token = storage.token {
             fetchProfile(token)
-            //switchToTabBarController()
         } else {
-            // Если токена нет, переходим к экрану авторизации
-            performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
+            let storyboard = UIStoryboard(name: "Main", bundle: .main)
+            guard let authViewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
+                assertionFailure("Не удалось найти AuthViewController по идентификатору")
+                return
+            }
+            authViewController.delegate = self
+            authViewController.modalPresentationStyle = .fullScreen
+            present(authViewController, animated: true)
         }
     }
 
@@ -62,29 +84,6 @@ final class SplashViewController: UIViewController {
 
 }
 
-// MARK: - Подготовка к переходу на AuthViewController
-
-extension SplashViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Проверяем, что выполняем переход именно на экран авторизации
-        if segue.identifier == showAuthenticationScreenSegueIdentifier {
-            // Извлекаем `UINavigationController`
-            guard let navigationController = segue.destination as? UINavigationController,
-                  let viewController = navigationController.viewControllers.first as? AuthViewController
-            else {
-                assertionFailure("Failed to prepare for \(showAuthenticationScreenSegueIdentifier)") // Ошибка, если что-то пошло не так
-                return
-            }
-            
-            // Устанавливаем текущий `SplashViewController` как делегат для `AuthViewController`
-            viewController.delegate = self
-        } else {
-            // Если это другой segue, вызываем `super`, чтобы обработка продолжилась
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-}
-
 // MARK: - Обработка успешной авторизации
 
 extension SplashViewController: AuthViewControllerDelegate {
@@ -116,7 +115,7 @@ extension SplashViewController {
                 case .success(let profile):
                     ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
                     
-                    self?.switchToTabBarController(selectedIndex: 1) // Переход к ленте фотографий после успешного получения профиляprivate let profileService = ProfileService.shared
+                    self?.switchToTabBarController(selectedIndex: 0) // Переход к ленте фотографий после успешного получения профиляprivate let profileService = ProfileService.shared
                 case .failure(let error):
                     print("Ошибка при загрузке профиля: \(error)")
                     // Если не удалось получить профиль, показываем экран с лентой фотографий
