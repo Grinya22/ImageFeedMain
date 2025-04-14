@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D202789E2DAB0358001A86A9 /* ImagesListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D202789D2DAB0358001A86A9 /* ImagesListService.swift */; };
 		D204A4B72D720AFB00010620 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D204A4B62D720AFB00010620 /* AppDelegate.swift */; };
 		D204A4B92D720AFB00010620 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D204A4B82D720AFB00010620 /* SceneDelegate.swift */; };
 		D204A4BB2D720AFB00010620 /* ImagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D204A4BA2D720AFB00010620 /* ImagesListViewController.swift */; };
 		D204A4BE2D720AFB00010620 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D204A4BC2D720AFB00010620 /* Main.storyboard */; };
 		D204A4C02D720AFD00010620 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D204A4BF2D720AFD00010620 /* Assets.xcassets */; };
 		D204A4C32D720AFD00010620 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D204A4C12D720AFD00010620 /* LaunchScreen.storyboard */; };
-		D204A4CE2D720AFD00010620 /* ImageFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D204A4CD2D720AFD00010620 /* ImageFeedTests.swift */; };
+		D204A4CE2D720AFD00010620 /* ImagesListServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D204A4CD2D720AFD00010620 /* ImagesListServiceTests.swift */; };
 		D204A4D82D720AFD00010620 /* ImageFeedUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D204A4D72D720AFD00010620 /* ImageFeedUITests.swift */; };
 		D204A4DA2D720AFD00010620 /* ImageFeedUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D204A4D92D720AFD00010620 /* ImageFeedUITestsLaunchTests.swift */; };
 		D204A4EA2D720E3700010620 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D204A4E92D720E3700010620 /* UIColor+Extensions.swift */; };
@@ -53,6 +54,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D202789D2DAB0358001A86A9 /* ImagesListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListService.swift; sourceTree = "<group>"; };
 		D204A4B32D720AFB00010620 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D204A4B62D720AFB00010620 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D204A4B82D720AFB00010620 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -62,7 +64,7 @@
 		D204A4C22D720AFD00010620 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D204A4C42D720AFD00010620 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D204A4C92D720AFD00010620 /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D204A4CD2D720AFD00010620 /* ImageFeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFeedTests.swift; sourceTree = "<group>"; };
+		D204A4CD2D720AFD00010620 /* ImagesListServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListServiceTests.swift; sourceTree = "<group>"; };
 		D204A4D32D720AFD00010620 /* ImageFeedUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D204A4D72D720AFD00010620 /* ImageFeedUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFeedUITests.swift; sourceTree = "<group>"; };
 		D204A4D92D720AFD00010620 /* ImageFeedUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFeedUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -110,6 +112,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D202789C2DAB0349001A86A9 /* ImagesListService */ = {
+			isa = PBXGroup;
+			children = (
+				D202789D2DAB0358001A86A9 /* ImagesListService.swift */,
+			);
+			path = ImagesListService;
+			sourceTree = "<group>";
+		};
 		D204A4AA2D720AFB00010620 = {
 			isa = PBXGroup;
 			children = (
@@ -152,7 +162,7 @@
 		D204A4CC2D720AFD00010620 /* ImageFeedTestsMain */ = {
 			isa = PBXGroup;
 			children = (
-				D204A4CD2D720AFD00010620 /* ImageFeedTests.swift */,
+				D204A4CD2D720AFD00010620 /* ImagesListServiceTests.swift */,
 			);
 			path = ImageFeedTestsMain;
 			sourceTree = "<group>";
@@ -187,6 +197,7 @@
 		D20C99F52DA0262100801F63 /* ServiceAccessLayer */ = {
 			isa = PBXGroup;
 			children = (
+				D202789C2DAB0349001A86A9 /* ImagesListService */,
 				D24533E42DA31A13005BC0FA /* ProfileService */,
 				D20C99FB2DA0382900801F63 /* Network */,
 				D20C99F62DA0262E00801F63 /* OAuth2 */,
@@ -417,6 +428,7 @@
 				D20C99FA2DA0264F00801F63 /* OAuth2TokenStorage.swift in Sources */,
 				D24533E62DA31A2E005BC0FA /* ProfileService.swift in Sources */,
 				D204A4B92D720AFB00010620 /* SceneDelegate.swift in Sources */,
+				D202789E2DAB0358001A86A9 /* ImagesListService.swift in Sources */,
 				D20C99FD2DA0383800801F63 /* URLSession+data.swift in Sources */,
 				D204A4EA2D720E3700010620 /* UIColor+Extensions.swift in Sources */,
 				D27ABAE42D8EBF780014EFDD /* AuthViewController.swift in Sources */,
@@ -428,7 +440,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D204A4CE2D720AFD00010620 /* ImageFeedTests.swift in Sources */,
+				D204A4CE2D720AFD00010620 /* ImagesListServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

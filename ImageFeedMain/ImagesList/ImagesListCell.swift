@@ -14,13 +14,16 @@ final class ImagesListCell: UITableViewCell {
         }
     }
     
-//    var tapCount = 0
-//    var tapResetTimer: Timer?
+
     
     @IBAction func tapOnLike(_ sender: Any) {
         isLiked.toggle()
     }
 }
+
+//    var tapCount = 0
+//    var tapResetTimer: Timer?
+//
 //    override func awakeFromNib() {
 //        super.awakeFromNib()
 //
