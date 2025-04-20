@@ -70,8 +70,6 @@ extension AuthViewController {
 
 
 extension AuthViewController {
-    
-    
     func showAuthErrorAlert() {
         let alertController = UIAlertController(
             title: "Что-то пошло не так",

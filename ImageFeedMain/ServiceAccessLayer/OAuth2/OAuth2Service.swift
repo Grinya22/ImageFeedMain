@@ -84,9 +84,6 @@ final class OAuth2Service {
         self.task = task
         task.resume()
     }
-    
-    
-
 
 //    // MARK: - Собираем URLRequest для запроса токена
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {
@@ -123,27 +120,3 @@ final class OAuth2Service {
         }
     }
 }
-
-//// MARK: - Расширение для выполнения сетевого запроса
-//extension OAuth2Service {
-//    // Метод, который отправляет запрос и возвращает модель (или ошибку)
-//    private func object(for request: URLRequest, completion: @escaping (Result<OAuthTokenResponseBody, Error>) -> Void) -> URLSessionTask {
-//        // Декодер для JSON
-//        let decoder = JSONDecoder()
-//
-//        // Создаём задачу
-//        return urlSession.data(for: request) { (result: Result<Data, Error>) in
-//            switch result {
-//            case .success(let data):
-//                do {
-//                    let body = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-//                    completion(.success(body))
-//                } catch {
-//                    completion(.failure(NetworkError.decodingError(error)))
-//                }
-//            case .failure(let error):
-//                completion(.failure(error))
-//            }
-//        }
-//    }
-//}

@@ -259,7 +259,7 @@
         <!--Single Image View Controller-->
         <scene sceneID="Khv-Nb-gnT">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="ITW-lM-Wqg" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SingleImageViewController" modalPresentationStyle="fullScreen" id="ITW-lM-Wqg" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hkF-ZH-baG">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -267,7 +267,7 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" placeholderIntrinsicWidth="414" placeholderIntrinsicHeight="414" translatesAutoresizingMaskIntoConstraints="NO" id="qP8-0l-Wc0">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="UDN-IH-G7i">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UDN-IH-G7i">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
@@ -285,13 +285,26 @@
                                             <action selector="didTapShareButton:" destination="ITW-lM-Wqg" eventType="touchUpInside" id="mk0-ow-DCy"/>
                                         </connections>
                                     </button>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="eFT-og-Vvq">
+                                        <rect key="frame" x="197" y="438" width="20" height="20"/>
+                                    </activityIndicatorView>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="QVW-1F-KNt" firstAttribute="top" secondItem="eFT-og-Vvq" secondAttribute="bottom" constant="337" id="Mu5-4e-Gfp"/>
+                                    <constraint firstItem="eFT-og-Vvq" firstAttribute="top" secondItem="6kP-w2-JqV" secondAttribute="top" constant="438" id="W0i-u9-2gY"/>
+                                    <constraint firstItem="eFT-og-Vvq" firstAttribute="leading" secondItem="6kP-w2-JqV" secondAttribute="leading" constant="197" id="s2I-EF-kaS"/>
+                                    <constraint firstItem="6kP-w2-JqV" firstAttribute="trailing" secondItem="eFT-og-Vvq" secondAttribute="trailing" constant="197" id="vHx-FW-piZ"/>
+                                </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="fEG-F8-8ET"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="6kP-w2-JqV"/>
                                 <connections>
                                     <outlet property="delegate" destination="ITW-lM-Wqg" id="Mgb-g6-7Wy"/>
                                 </connections>
                             </scrollView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="StubIcon" translatesAutoresizingMaskIntoConstraints="NO" id="xq3-BT-tVO">
+                                <rect key="frame" x="165" y="410" width="83" height="75"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hSZ-w8-TFj">
                                 <rect key="frame" x="8" y="52" width="44" height="44"/>
                                 <constraints>
@@ -310,19 +323,21 @@
                         <viewLayoutGuide key="safeArea" id="ixF-wB-ODp"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
-                            <constraint firstItem="qP8-0l-Wc0" firstAttribute="leading" secondItem="ixF-wB-ODp" secondAttribute="leading" id="7Xv-hq-3Am"/>
-                            <constraint firstAttribute="bottom" secondItem="qP8-0l-Wc0" secondAttribute="bottom" id="94b-fl-CuQ"/>
                             <constraint firstItem="hSZ-w8-TFj" firstAttribute="top" secondItem="ixF-wB-ODp" secondAttribute="top" constant="8" id="Dcd-W1-6K4"/>
+                            <constraint firstItem="qP8-0l-Wc0" firstAttribute="leading" secondItem="ixF-wB-ODp" secondAttribute="leading" id="FSw-Z0-a4A"/>
+                            <constraint firstItem="qP8-0l-Wc0" firstAttribute="trailing" secondItem="ixF-wB-ODp" secondAttribute="trailing" id="J4F-hc-Dtz"/>
                             <constraint firstItem="ixF-wB-ODp" firstAttribute="bottom" secondItem="QVW-1F-KNt" secondAttribute="bottom" constant="16" id="N8t-g5-Lw1"/>
+                            <constraint firstItem="qP8-0l-Wc0" firstAttribute="top" secondItem="hkF-ZH-baG" secondAttribute="top" id="eOm-XN-Goe"/>
+                            <constraint firstAttribute="bottom" secondItem="qP8-0l-Wc0" secondAttribute="bottom" id="eXR-Gz-pzg"/>
                             <constraint firstItem="hSZ-w8-TFj" firstAttribute="leading" secondItem="ixF-wB-ODp" secondAttribute="leading" constant="8" id="fav-6G-xQs"/>
-                            <constraint firstItem="ixF-wB-ODp" firstAttribute="trailing" secondItem="qP8-0l-Wc0" secondAttribute="trailing" id="iyZ-NS-vi0"/>
                             <constraint firstItem="QVW-1F-KNt" firstAttribute="leading" secondItem="ixF-wB-ODp" secondAttribute="leading" constant="182" id="zbR-85-PR2"/>
-                            <constraint firstItem="qP8-0l-Wc0" firstAttribute="top" secondItem="hkF-ZH-baG" secondAttribute="top" id="zos-DB-bai"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="xKx-XX-IY9"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="eFT-og-Vvq" id="znZ-S5-VB4"/>
                         <outlet property="imageView" destination="UDN-IH-G7i" id="4xS-5U-U48"/>
+                        <outlet property="placeholderStub" destination="xq3-BT-tVO" id="nDl-Kr-8ic"/>
                         <outlet property="scrollView" destination="qP8-0l-Wc0" id="Uzg-jo-Jcu"/>
                     </connections>
                 </viewController>
@@ -333,6 +348,7 @@
     </scenes>
     <resources>
         <image name="0" width="1600" height="1059"/>
+        <image name="StubIcon" width="83" height="75"/>
         <image name="backward" width="24" height="24"/>
         <image name="backwardBlack" width="24" height="24"/>
         <image name="likeButtonOn" width="42" height="42"/>

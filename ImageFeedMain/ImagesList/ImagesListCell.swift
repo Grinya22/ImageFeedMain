@@ -1,11 +1,42 @@
 import UIKit
+import Kingfisher
+
+protocol ImagesListCellDelegate: AnyObject {
+    func imageListCellDidTapLike(_ cell: ImagesListCell)
+}
 
 final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = "ImagesListCell"
     
+    weak var delegate: ImagesListCellDelegate?
+    
+    var animationLayers = Set<CALayer>()
+    
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var dataLabel: UILabel!
     @IBOutlet weak var cellImage: UIImageView!
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // Удаляем старые градиенты, чтобы не накапливались
+        animationLayers.forEach { $0.removeFromSuperlayer() }
+        animationLayers.removeAll()
+
+        addGradient(to: cellImage, cornerRadius: 16)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        // Отмена загрузки и сброс картинки
+        cellImage.kf.cancelDownloadTask()
+        cellImage.image = nil
+        
+        // Удаление старых градиентов
+        animationLayers.forEach { $0.removeFromSuperlayer() }
+        animationLayers.removeAll()
+    }
     
     var isLiked: Bool = false {
         didSet {
@@ -14,12 +45,48 @@ final class ImagesListCell: UITableViewCell {
         }
     }
     
+    func setIsLiked(_ isLiked: Bool) {
+        self.isLiked = isLiked
+    }
 
-    
     @IBAction func tapOnLike(_ sender: Any) {
-        isLiked.toggle()
+        delegate?.imageListCellDidTapLike(self)
+        //isLiked.toggle()
+    }
+    
+    
+}
+
+extension ImagesListCell {
+    private func addGradient(to view: UIView, cornerRadius: CGFloat = 0) {
+        let gradient = CAGradientLayer()
+        gradient.colors = [
+            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor,
+            UIColor(red: 0.9, green: 0.9, blue: 0.95, alpha: 1).cgColor,
+            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor
+        ]
+
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1, y: 0.5)
+
+        gradient.locations = [-1, -0.5, 0] // начальная позиция "белой полосы"
+        gradient.frame = view.bounds
+        //gradient.frame = ImagesListViewController.shared.cellHeight
+        gradient.cornerRadius = 16
+
+        let animation = CABasicAnimation(keyPath: "locations")
+        animation.fromValue = [-1, -0.5, 0]
+        animation.toValue = [1, 1.5, 2]
+        animation.duration = 2
+        animation.repeatCount = .infinity
+        gradient.add(animation, forKey: "locationChangeInImagesListCell")
+
+        view.layer.addSublayer(gradient)
+        animationLayers.insert(gradient)
     }
 }
+
+
 
 //    var tapCount = 0
 //    var tapResetTimer: Timer?

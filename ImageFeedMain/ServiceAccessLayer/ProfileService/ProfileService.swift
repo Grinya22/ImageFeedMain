@@ -78,3 +78,8 @@ final class ProfileService {
     }    
 }
 
+extension ProfileService {
+    func resetProfile() {
+        profile = nil
+    }
+}
