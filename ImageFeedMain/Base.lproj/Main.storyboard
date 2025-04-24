@@ -288,12 +288,17 @@
                                     <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="eFT-og-Vvq">
                                         <rect key="frame" x="197" y="438" width="20" height="20"/>
                                     </activityIndicatorView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StubIcon" translatesAutoresizingMaskIntoConstraints="NO" id="xq3-BT-tVO">
+                                        <rect key="frame" x="166" y="411" width="83" height="75"/>
+                                    </imageView>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="QVW-1F-KNt" firstAttribute="top" secondItem="eFT-og-Vvq" secondAttribute="bottom" constant="337" id="Mu5-4e-Gfp"/>
                                     <constraint firstItem="eFT-og-Vvq" firstAttribute="top" secondItem="6kP-w2-JqV" secondAttribute="top" constant="438" id="W0i-u9-2gY"/>
+                                    <constraint firstItem="xq3-BT-tVO" firstAttribute="centerX" secondItem="qP8-0l-Wc0" secondAttribute="centerX" id="ktG-4q-iiR"/>
                                     <constraint firstItem="eFT-og-Vvq" firstAttribute="leading" secondItem="6kP-w2-JqV" secondAttribute="leading" constant="197" id="s2I-EF-kaS"/>
                                     <constraint firstItem="6kP-w2-JqV" firstAttribute="trailing" secondItem="eFT-og-Vvq" secondAttribute="trailing" constant="197" id="vHx-FW-piZ"/>
+                                    <constraint firstItem="xq3-BT-tVO" firstAttribute="centerY" secondItem="qP8-0l-Wc0" secondAttribute="centerY" id="zBA-ZE-IsX"/>
                                 </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="fEG-F8-8ET"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="6kP-w2-JqV"/>
@@ -301,10 +306,6 @@
                                     <outlet property="delegate" destination="ITW-lM-Wqg" id="Mgb-g6-7Wy"/>
                                 </connections>
                             </scrollView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="StubIcon" translatesAutoresizingMaskIntoConstraints="NO" id="xq3-BT-tVO">
-                                <rect key="frame" x="165" y="410" width="83" height="75"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hSZ-w8-TFj">
                                 <rect key="frame" x="8" y="52" width="44" height="44"/>
                                 <constraints>

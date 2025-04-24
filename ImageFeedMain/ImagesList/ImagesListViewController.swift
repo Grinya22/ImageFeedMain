@@ -4,7 +4,7 @@ import Kingfisher
 class ImagesListViewController: UIViewController {
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
-    static let shared = ImagesListViewController()
+    //static let shared = ImagesListViewController()
 
     @IBOutlet private var tableView: UITableView!
 
@@ -45,6 +45,11 @@ class ImagesListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        print("viewWillAppear, photos.count: \(photos.count)")
+        photos = ImagesListService.shared.photos
+        KingfisherManager.shared.cache.clearMemoryCache() // Очищаем кэш Kingfisher
+        tableView.reloadData()
+        tableView.layoutIfNeeded() // Форсируем Auto Layout
         if photos.isEmpty {
             loadPhotosIfNeeded()
         }
@@ -149,14 +154,19 @@ extension ImagesListViewController: UITableViewDataSource, UITableViewDelegate {
 extension ImagesListViewController {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         let photo = photos[indexPath.row]
-        //let url = URL(string: photo.regularImageURL)
-        let url = URL(string: photo.fullImageURL)
+        let url = URL(string: photo.regularImageURL)
+        //let url = URL(string: photo.fullImageURL)
+        print("Настройка ячейки для indexPath: \(indexPath), URL: \(url?.absoluteString ?? "nil")")
         
         // Отменяем предыдущую загрузку и сбрасываем изображение
         cell.cellImage.kf.cancelDownloadTask()
         cell.cellImage.image = nil
         cell.cellImage.kf.indicatorType = .activity
-
+        
+        print("Добавляем градиент для ячейки \(indexPath)")
+        // Добавляем градиент перед загрузкой
+        cell.addGradientIfNeeded()
+        
         // Устанавливаем уникальный тег для отслеживания переиспользования
         let currentTag = indexPath.row
         cell.tag = currentTag
@@ -164,16 +174,21 @@ extension ImagesListViewController {
         cell.cellImage.kf.setImage(
             with: url,
             placeholder: UIImage(named: "Stub"),
-            options: [.transition(.fade(0.3))]
+            options: [.transition(.fade(0.3)), .forceRefresh, .forceTransition]
         ) { result in
             // Проверка: не изменилась ли ячейка с тех пор
-            guard cell.tag == currentTag else { return }
-
+            guard cell.tag == currentTag else {
+                print("Ячейка переиспользована, игнорируем результат для \(indexPath)")
+                return
+            }
             switch result {
             case .success:
-                break // можно добавить анимацию при успехе, если хочешь
+                print("Картинка загружена для \(indexPath), убираем градиент")
+                // Убираем градиент после успешной загрузки
+                cell.removeGradient()
             case .failure(let error):
                 print("Ошибка загрузки изображения: \(error)")
+                // Оставляем градиент, если картинка не загрузилась
             }
         }
 
@@ -193,6 +208,11 @@ extension ImagesListViewController {
 
         // Устанавливаем статус лайка
         cell.isLiked = photo.isLiked
+        
+        // Добавляем градиент после настройки ячейки
+        print("Добавляем градиент для ячейки \(indexPath)")
+        cell.addGradientIfNeeded()
+        cell.setNeedsLayout() // Форсируем обновление layout
     }
 }
 
@@ -240,33 +260,33 @@ extension ImagesListViewController {
     }
 }
 
-extension ImagesListViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showSingleImageSegueIdentifier,
-           let viewController = segue.destination as? SingleImageViewController,
-           let indexPath = sender as? IndexPath {
-            
-            let photo = photos[indexPath.row]
-            if let url = URL(string: photo.fullImageURL) {
-                // Показываем лоадер
-                UIBlockingProgressHUD.show()
-                
-                // Загружаем изображение из сети
-                KingfisherManager.shared.retrieveImage(with: url) { result in
-                    DispatchQueue.main.async {
-                        UIBlockingProgressHUD.dismiss()
-                    }
-                    
-                    switch result {
-                    case .success(let imageResult):
-                        DispatchQueue.main.async {
-                            viewController.image = imageResult.image
-                        }
-                    case .failure(let error):
-                        print("Не удалось загрузить изображение: \(error)")
-                    }
-                }
-            }
-        }
-    }
-}
+//extension ImagesListViewController {
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == showSingleImageSegueIdentifier,
+//           let viewController = segue.destination as? SingleImageViewController,
+//           let indexPath = sender as? IndexPath {
+//
+//            let photo = photos[indexPath.row]
+//            if let url = URL(string: photo.fullImageURL) {
+//                // Показываем лоадер
+//                UIBlockingProgressHUD.show()
+//
+//                // Загружаем изображение из сети
+//                KingfisherManager.shared.retrieveImage(with: url) { result in
+//                    DispatchQueue.main.async {
+//                        UIBlockingProgressHUD.dismiss()
+//                    }
+//
+//                    switch result {
+//                    case .success(let imageResult):
+//                        DispatchQueue.main.async {
+//                            viewController.image = imageResult.image
+//                        }
+//                    case .failure(let error):
+//                        print("Не удалось загрузить изображение: \(error)")
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}

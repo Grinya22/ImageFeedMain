@@ -16,26 +16,21 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet weak var dataLabel: UILabel!
     @IBOutlet weak var cellImage: UIImageView!
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // Удаляем старые градиенты, чтобы не накапливались
-        animationLayers.forEach { $0.removeFromSuperlayer() }
-        animationLayers.removeAll()
-
-        addGradient(to: cellImage, cornerRadius: 16)
-    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-        // Отмена загрузки и сброс картинки
+        print("prepareForReuse для ячейки \(self)")
         cellImage.kf.cancelDownloadTask()
         cellImage.image = nil
-        
-        // Удаление старых градиентов
+        // Удаляем все градиентные слои
+        cellImage.layer.sublayers?.removeAll(where: { $0.name == "locationChangeInImagesListCell" })
         animationLayers.forEach { $0.removeFromSuperlayer() }
         animationLayers.removeAll()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // Обновляем frame градиента при изменении размеров cellImage
+        updateGradientFrame()
     }
     
     var isLiked: Bool = false {
@@ -48,45 +43,73 @@ final class ImagesListCell: UITableViewCell {
     func setIsLiked(_ isLiked: Bool) {
         self.isLiked = isLiked
     }
-
+    
     @IBAction func tapOnLike(_ sender: Any) {
         delegate?.imageListCellDidTapLike(self)
         //isLiked.toggle()
     }
     
+    func addGradientIfNeeded() {
+        print("addGradientIfNeeded, cellImage.image: \(cellImage.image != nil ? "не nil" : "nil"), cellImage.bounds: \(cellImage.bounds)")
+        // Добавляем градиент, если нет картинки или это плейсхолдер
+        if cellImage.image == nil || cellImage.image == UIImage(named: "Stub") {
+            addGradient(to: cellImage, cornerRadius: 16)
+        }
+    }
     
-}
-
-extension ImagesListCell {
     private func addGradient(to view: UIView, cornerRadius: CGFloat = 0) {
+        print("Добавляем градиент для \(view)")
+        // Удаляем старые градиенты
+        view.layer.sublayers?.removeAll(where: { $0.name == "locationChangeInImagesListCell" })
+        animationLayers.forEach { $0.removeFromSuperlayer() }
+        animationLayers.removeAll()
+        
         let gradient = CAGradientLayer()
+        gradient.name = "locationChangeInImagesListCell"
+//        gradient.colors = [
+//            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor,
+//            UIColor(red: 0.9, green: 0.9, blue: 0.95, alpha: 1).cgColor,
+//            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor
+//        ]
         gradient.colors = [
-            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor,
-            UIColor(red: 0.9, green: 0.9, blue: 0.95, alpha: 1).cgColor,
-            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor
+            UIColor(red: 0.5, green: 0.6, blue: 0.8, alpha: 1).cgColor, // Яркий серо-голубой
+            UIColor(red: 0.95, green: 0.95, blue: 1.0, alpha: 1).cgColor, // Белый с голубым оттенком
+            UIColor(red: 0.5, green: 0.6, blue: 0.8, alpha: 1).cgColor // Возвращаемся к первому
         ]
-
         gradient.startPoint = CGPoint(x: 0, y: 0.5)
         gradient.endPoint = CGPoint(x: 1, y: 0.5)
-
-        gradient.locations = [-1, -0.5, 0] // начальная позиция "белой полосы"
+        gradient.locations = [-1, -0.5, 0]
         gradient.frame = view.bounds
-        //gradient.frame = ImagesListViewController.shared.cellHeight
-        gradient.cornerRadius = 16
-
+        gradient.cornerRadius = cornerRadius
+        
         let animation = CABasicAnimation(keyPath: "locations")
         animation.fromValue = [-1, -0.5, 0]
         animation.toValue = [1, 1.5, 2]
         animation.duration = 2
         animation.repeatCount = .infinity
         gradient.add(animation, forKey: "locationChangeInImagesListCell")
-
+        
         view.layer.addSublayer(gradient)
         animationLayers.insert(gradient)
     }
+    
+    func removeGradient() {
+        // Удаляем градиент после загрузки картинки
+        cellImage.layer.sublayers?.removeAll(where: { $0.name == "locationChangeInImagesListCell" })
+        animationLayers.forEach { $0.removeFromSuperlayer() }
+        animationLayers.removeAll()
+    }
+    
+    private func updateGradientFrame() {
+        // Обновляем frame всех градиентных слоёв
+        for layer in animationLayers {
+            if layer.name == "locationChangeInImagesListCell" {
+                print("Обновляем frame градиента, новый bounds: \(cellImage.bounds)")
+                layer.frame = cellImage.bounds
+            }
+        }
+    }
 }
-
-
 
 //    var tapCount = 0
 //    var tapResetTimer: Timer?
