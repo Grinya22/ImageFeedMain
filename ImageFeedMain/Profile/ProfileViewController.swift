@@ -1,7 +1,12 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+public protocol ProfileViewControllerProtocol: AnyObject {
+    func updateProfileDetails(name: String, loginName: String, bio: String)
+    func updateAvatar(with url: URL?)
+}
+
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     private var nameLabel: UILabel!
     private var loginNameLabel: UILabel!
     private var descriptionLabel: UILabel!
@@ -11,10 +16,15 @@ final class ProfileViewController: UIViewController {
     private var imageView: UIImageView!
     private var animationLayers = Set<CALayer>()
     
+    private var presenter: ProfilePresenterProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .ypBlack
+        
+        presenter = ProfileViewPresenter()
+        presenter?.view = self
         
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
@@ -24,7 +34,7 @@ final class ProfileViewController: UIViewController {
             ) { [weak self] _ in
                 guard let self = self else { return }
                 print("Получено уведомление ProfileImageService.didChangeNotification")
-                self.updateAvatar()
+                self.presenter?.updateAvatar()
             }
         
         imageView = UIImageView()
@@ -90,9 +100,7 @@ final class ProfileViewController: UIViewController {
             logoutButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -36)
         ])
         
-        if let profile = ProfileService.shared.profile {
-            updateProfileDetails(with: profile)
-        }
+        presenter?.viewDidLoad()
         
         view.layoutIfNeeded()
     }
@@ -102,7 +110,7 @@ final class ProfileViewController: UIViewController {
         print("viewWillAppear, imageView.image: \(imageView.image != nil ? "не nil" : "nil")")
         KingfisherManager.shared.cache.clearMemoryCache()
         view.layoutIfNeeded()
-        updateAvatar()
+        presenter?.updateAvatar()
     }
     
     override func viewDidLayoutSubviews() {
@@ -111,10 +119,10 @@ final class ProfileViewController: UIViewController {
         updateGradientFrame()
     }
     
-    private func updateProfileDetails(with profile: Profile) {
-        nameLabel.text = profile.name.isEmpty ? "Имя не указано" : profile.name
-        loginNameLabel.text = profile.loginName.isEmpty ? "@неизвестный_пользователь" : profile.loginName
-        descriptionLabel.text = (profile.bio?.isEmpty ?? true) ? "Профиль не заполнен" : profile.bio
+    func updateProfileDetails(name: String, loginName: String, bio: String) {
+        nameLabel.text = name
+        loginNameLabel.text = loginName
+        descriptionLabel.text = bio
     }
     
     private func makeRoundedPlaceholder(size: CGFloat, cornerRadius: CGFloat) -> UIImage? {
@@ -135,46 +143,41 @@ final class ProfileViewController: UIViewController {
         return image
     }
     
-    private func updateAvatar() {
-        print("Вызван updateAvatar, imageView: \(imageView != nil ? "не nil" : "nil")")
-        guard imageView != nil else {
-            print("imageView is nil, пропускаем обновление аватарки")
-            return
-        }
+    internal func updateAvatar(with url: URL?) {
+//        print("Вызван updateAvatar, imageView: \(imageView != nil ? "не nil" : "nil")")
+//        guard imageView != nil else {
+//            print("imageView is nil, пропускаем обновление аватарки")
+//            return
+//        }
         
         // Добавляем градиент, только если аватарка ещё не загружена
         if imageView.image == nil {
             addGradient(to: imageView, cornerRadius: 35)
         }
         
-        guard let profileImageURL = ProfileImageService.shared.avatarURL,
-              let url = URL(string: profileImageURL) else {
-                  print("Нет URL аватарки, устанавливаем плейсхолдер")
-                  imageView.image = makeRoundedPlaceholder(size: 70, cornerRadius: 35)
-                  return
-              }
+        let placeholder = makeRoundedPlaceholder(size: 70, cornerRadius: 35)
         
-        let processor = RoundCornerImageProcessor(cornerRadius: 35)
-        imageView.kf.setImage(
-            with: url,
-            placeholder: makeRoundedPlaceholder(size: 70, cornerRadius: 35),
-            options: [
+        if let url = url {
+            let processor = RoundCornerImageProcessor(cornerRadius: 35)
+            imageView.kf.setImage(with: url, placeholder: placeholder, options: [
                 .processor(processor),
                 .scaleFactor(UIScreen.main.scale),
                 .forceRefresh,
                 .forceTransition,
                 .cacheMemoryOnly
-            ]
-        ) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success:
-                print("Аватарка загружена")
-                self.removeGradient() // Убираем градиент после загрузки
-            case .failure(let error):
-                print("Ошибка загрузки аватарки: \(error)")
-                // Оставляем градиент, если загрузка не удалась
+            ]) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success:
+                    print("Аватарка загружена")
+                    self.removeGradient() // Убираем градиент после загрузки
+                case .failure(let error):
+                    print("Ошибка загрузки аватарки: \(error)")
+                    // Оставляем градиент, если загрузка не удалась
+                }
             }
+        } else {
+            imageView.image = placeholder
         }
     }
     

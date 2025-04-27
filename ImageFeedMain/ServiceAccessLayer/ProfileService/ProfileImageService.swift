@@ -8,6 +8,12 @@ final class ProfileImageService {
     // Приватное свойство для хранения URL аватарки
     private(set) var avatarURL: String?
     
+    #if DEBUG
+    func setTestAvatarURL(_ avatarURL: String?) {
+        self.avatarURL = avatarURL
+    }
+    #endif
+    
     private var task: URLSessionTask?
     
     private let urlSession = URLSession.shared

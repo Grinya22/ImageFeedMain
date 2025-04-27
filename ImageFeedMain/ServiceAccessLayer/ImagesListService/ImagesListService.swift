@@ -2,54 +2,11 @@ import Foundation
 import CoreGraphics
 import Kingfisher
 
-struct Photo {
-    let id: String
-    let size: CGSize
-    let createdAt: String?
-    let welcomeDescription: String?
-    let thumbImageURL: String
-    let smallImageURL: String
-    let regularImageURL: String
-    let fullImageURL: String
-    let isLiked: Bool
-}
-
-struct PhotoResult: Codable {
-    let id: String
-    let width: Int
-    let height: Int
-    let createdAt: String?
-    let description: String?
-    let isLikedByUser: Bool
-    let urls: UrlsResult
-    var createdAtDate: Date?
-
-    enum CodingKeys: String, CodingKey {
-        case id, width, height
-        case createdAt = "created_at"
-        case description
-        case isLikedByUser = "liked_by_user"
-        case urls
-    }
-    
-    mutating func convertCreatedAtToDate() {
-        guard let createdAtString = createdAt else { return }
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-        self.createdAtDate = dateFormatter.date(from: createdAtString)
-    }
-}
-
-struct UrlsResult: Codable {
-    let thumb: String
-    let small: String
-    let regular: String
-    let full: String
-}
-
-final class ImagesListService {
+final class ImagesListService: ImagesListServiceProtocol {
     private (set) var photos: [Photo] = []
-
+    
+    static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
+    
     private var lastLoadedPage: Int?
 
     static let shared = ImagesListService()
@@ -71,8 +28,6 @@ final class ImagesListService {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
     }
-
-    static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
 
     func fetchPhotosNextPage(token: String) {
         if task != nil { return }
@@ -149,7 +104,7 @@ final class ImagesListService {
 }
 
 extension ImagesListService {
-    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+    func changeLike(photoId: String, isLike: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let token = OAuth2TokenStorage.shared.token else {
             completion(.failure(NSError(domain: "NoToken", code: 401)))
             return

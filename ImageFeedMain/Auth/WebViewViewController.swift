@@ -1,8 +1,11 @@
 import UIKit
 import WebKit
 
-enum WebViewConstants {
-    static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+public protocol WebViewViewControllerProtocol: AnyObject {
+    var presenter: WebViewPresenterProtocol? {get set}
+    func load(request: URLRequest)
+    func setProgressValue(_ newValue: Float)
+    func setProgressHidden(_ isHidden: Bool)
 }
 
 protocol WebViewViewControllerDelegate: AnyObject {
@@ -13,8 +16,7 @@ protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewControllerDidCancel(_ vc: WebViewViewController)
 }
 
-
-final class WebViewViewController: UIViewController {
+final class WebViewViewController: UIViewController, WebViewViewControllerProtocol {
     @IBOutlet weak var webView: WKWebView!
     
     @IBAction func didTapBackButton(_ sender: Any) {
@@ -29,58 +31,52 @@ final class WebViewViewController: UIViewController {
     
     private var estimatedProgressObservation: NSKeyValueObservation?
     
+    var presenter: WebViewPresenterProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        webView.accessibilityIdentifier = "UnsplashWebView"
+        
         webView.navigationDelegate = self
         
-        loadAuthView()
+        presenter?.viewDidLoad()
     }
     
-    private func loadAuthView() {
-        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
-            print("нет urlComponents")
-            return
-        }
-        
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: Constants.accessScope)
-        ]
-//        Мы инициализируем структуру URLComponents с указанием адреса запроса.
-//        Устанавливаем значение client_id — код доступа приложения.
-//        Теперь — redirect_uri, то есть URI, который обрабатывает успешную авторизацию пользователя.
-//        response_type — тип ответа, который мы ожидаем. Unsplash ожидает значения code.
-//        Устанавливаем значение scope — списка доступов, разделённых плюсом.
-//        В поле urlComponents.url — нужный нам URL.
-        
-        guard let url = urlComponents.url else {
-            print("нет url")
-            return
-        }
-        let request = URLRequest(url: url)
-        webView.load(request)
-        
-        estimatedProgressObservation = webView.observe(
-            \.estimatedProgress,
-             options: [],
-             changeHandler: { [weak self] _, _ in
-                 guard let self = self else { return }
-                 self.updateProgress()
-             })
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        updateProgress()
+        // NOTE: Since the class is marked as `final` we don't need to pass a context.
+        // In case of inhertiance context must not be nil.
+        webView.addObserver(
+            self,
+            forKeyPath: #keyPath(WKWebView.estimatedProgress),
+            options: .new,
+            context: nil)
     }
     
-    private func updateProgress() {
-        progressView.progress = Float(webView.estimatedProgress)
-        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == #keyPath(WKWebView.estimatedProgress) {
+            presenter?.didUpdateProgressValue(webView.estimatedProgress)
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
+    }
+    
+    func load(request: URLRequest) {
+        webView.load(request)
+    }
+    
+    func setProgressValue(_ newValue: Float) {
+        progressView.progress = newValue
+    }
+    
+    func setProgressHidden(_ isHidden: Bool) {
+        progressView.isHidden = isHidden
     }
 }
  
@@ -113,24 +109,10 @@ extension WebViewViewController: WKNavigationDelegate {
     }
     
     private func code(from navigationAction: WKNavigationAction) -> String? {
-        if
-            let url = navigationAction.request.url,
-            let urlComponents = URLComponents(string: url.absoluteString),
-            urlComponents.path == "/oauth/authorize/native",
-            let items = urlComponents.queryItems,
-            let codeItem = items.first(where: { $0.name == "code" })
-//                Получаем из навигационного действия navigationAction URL.
-//                Создаём уже известную нам структуру URLComponents. Только теперь мы будем не формировать URL с помощью компонентов, а наоборот — получать значения компонентов из URL.
-//                Проверяем, совпадает ли адрес запроса с адресом получения кода.
-//                Проверяем, есть ли в URLComponents компоненты запроса (в них должен быть код). Компонент запроса URLQueryItem — это структура, которая содержит имя компонента name и его значение value.
-//                Ищем в массиве компонентов такой компонент, у которого значение name == code.
-//                Если все проверки выше прошли успешно, возвращаем значение value найденного компонента. Иначе возвращаем nil.
-        {
-            return codeItem.value
-            // Если все проверки выше прошли успешно, возвращаем значение value найденного компонента. Иначе возвращаем nil.
-        } else {
-            return nil
+        if let url = navigationAction.request.url{
+            return presenter?.code(from: url)
         }
+        return nil
     }
 }
 

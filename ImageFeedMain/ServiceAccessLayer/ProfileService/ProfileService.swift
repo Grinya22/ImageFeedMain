@@ -17,6 +17,12 @@ final class ProfileService {
     
     private(set) var profile: Profile?
     
+    #if DEBUG
+    func setTestProfile(_ profile: Profile?) {
+        self.profile = profile
+    }
+    #endif
+    
     struct ProfileResult: Codable {
         let username: String
         let firstName: String

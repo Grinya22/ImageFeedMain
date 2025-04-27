@@ -9,7 +9,14 @@ final class AuthViewController: UIViewController {
     
     private let oauth2Service = OAuth2Service.shared
     
+    @IBOutlet weak var enterLabel: UIButton!
+    
     weak var delegate: AuthViewControllerDelegate?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        enterLabel.accessibilityIdentifier = "Authenticate"
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showWebViewSegueIdentifier {
@@ -19,6 +26,10 @@ final class AuthViewController: UIViewController {
                 assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
                 return
             }
+            let authHelper = AuthHelper()
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewViewController
             webViewViewController.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)

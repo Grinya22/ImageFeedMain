@@ -20,6 +20,20 @@
                ReferencedContainer = "container:ImageFeedMain.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D22E8BC82DBACD7D00A714EA"
+               BuildableName = "ImageFeedMainTests.xctest"
+               BlueprintName = "ImageFeedMainTests"
+               ReferencedContainer = "container:ImageFeedMain.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -32,9 +46,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D204A4C82D720AFD00010620"
-               BuildableName = "ImageFeedTests.xctest"
-               BlueprintName = "ImageFeedTests"
+               BlueprintIdentifier = "D204A4D22D720AFD00010620"
+               BuildableName = "ImageFeedUITests.xctest"
+               BlueprintName = "ImageFeedUITests"
                ReferencedContainer = "container:ImageFeedMain.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -42,9 +56,19 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D204A4D22D720AFD00010620"
-               BuildableName = "ImageFeedUITests.xctest"
-               BlueprintName = "ImageFeedUITests"
+               BlueprintIdentifier = "D22E8BC82DBACD7D00A714EA"
+               BuildableName = "ImageFeedMainTests.xctest"
+               BlueprintName = "ImageFeedMainTests"
+               ReferencedContainer = "container:ImageFeedMain.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D2F4070F2DBBFE1C000D9164"
+               BuildableName = "ImageFeedTests2.xctest"
+               BlueprintName = "ImageFeedTests2"
                ReferencedContainer = "container:ImageFeedMain.xcodeproj">
             </BuildableReference>
          </TestableReference>

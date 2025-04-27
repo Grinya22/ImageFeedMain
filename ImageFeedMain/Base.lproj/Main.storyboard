@@ -40,6 +40,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uNX-IM-pKI">
                                 <rect key="frame" x="16" y="724" width="382" height="48"/>
                                 <color key="backgroundColor" name="YP White"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Authenticate">
+                                    <bool key="isElement" value="YES"/>
+                                </accessibility>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="nwK-lr-HpE"/>
                                 </constraints>
@@ -81,6 +84,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="rkN-yE-PWN"/>
+                    <connections>
+                        <outlet property="enterLabel" destination="uNX-IM-pKI" id="zQy-C0-Vyu"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tBY-fm-2sY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -89,7 +95,7 @@
         <!--Web View View Controller-->
         <scene sceneID="OIB-0R-UQk">
             <objects>
-                <viewController id="Goe-rn-7R3" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" id="Goe-rn-7R3" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bGx-Xm-pUw">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -231,7 +237,7 @@
                     <navigationItem key="navigationItem" id="lab-Wg-xVB"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="tableView" destination="faf-WL-94y" id="7Ze-vf-s8V"/>
+                        <outlet property="tableView" destination="faf-WL-94y" id="zjA-uf-tmr"/>
                         <segue destination="ITW-lM-Wqg" kind="presentation" identifier="ShowSingleImage" id="1U2-TS-CdX"/>
                     </connections>
                 </viewController>
@@ -289,7 +295,7 @@
                                         <rect key="frame" x="197" y="438" width="20" height="20"/>
                                     </activityIndicatorView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="StubIcon" translatesAutoresizingMaskIntoConstraints="NO" id="xq3-BT-tVO">
-                                        <rect key="frame" x="166" y="411" width="83" height="75"/>
+                                        <rect key="frame" x="165.5" y="410.5" width="83" height="75"/>
                                     </imageView>
                                 </subviews>
                                 <constraints>
