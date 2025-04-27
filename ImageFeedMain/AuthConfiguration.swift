@@ -1,9 +1,9 @@
 import Foundation
 
 enum Constants {
-    static let accessKey = "your_Access_Key"
-    static let secretKey = "your_Secret_Key"
-    static let redirectURI = "your_Redirect_URI"
+    static let accessKey = "u15mRlVXuYIjj_vstcVwraoGeVBasdJBI6g2Cq7WnVc"
+    static let secretKey = "HSRpBF_Mj3Bl4c3wReUHfbzHGq7MdGsiUmckfTn-VUA"
+    static let redirectURI = "urn:ietf:wg:oauth:2.0:oob"
     static let accessScope = "public+read_user+write_likes"
 
     static let defaultBaseURL = URL(string: "https://api.unsplash.com")!
